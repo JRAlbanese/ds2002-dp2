@@ -1,0 +1,73 @@
+#!/bin/bash python3
+
+from pymongo import MongoClient, errors
+from bson.json_util import dumps
+import os
+import json
+
+#note that MONGOPASS is now changed to be MY OWN mongo passowrd
+MONGOPASS = os.getenv('MONGOPASS')
+
+uri = "mongodb+srv://cluster0.ka7gyvz.mongodb.net"
+client = MongoClient(uri, username='jayralbanese', password=MONGOPASS, connectTimeoutMS=200, retryWrites=True)
+# specify a database
+db = client.sample_mflix  #this is a databse inside of cluter0, I think
+# specify a collection
+collection = db.users   #this is a collection in the sample_flix database inside of cluster0
+
+"""
+print(str(db))
+print(str(collection))
+
+both of the above things printed out, so I think the connection is working!?
+
+"""
+
+
+
+#now, we need to import the 50 files within data, one of the directories given inside of this repo
+
+
+directory = "data"
+
+"""so first, let's list the content of the data directory that we have in our repo"""
+for filename in os.listdir(directory):
+    with open(os.path.join(directory,filename)) as file: #now we have a file joining direcotry and filename
+        # 1) Loading or opening the JSON file into an object called file_data:
+        try:
+            file_data = json.load(file)
+        except Exception as e:
+            print(e, "error when loading", file) #this will just say there was an error when loading our file
+
+
+        #for each in file:
+            #print(each)
+            """^this code just prints up ever entry across each files in data
+            """
+        #print(datafile) #YES THIS WORKED, I see the names and information about (not contained within) each file in the data directory
+        #do other things with f
+
+
+
+"""Now, below, we will develop the code for importing the JSON files
+    contained in the data directory ito MongoDB using pymongo
+
+    the following is the code to do this for a single JSON file"""
+
+"""
+# 2) Inserting the loaded data in the collection
+#if JSON contains data more than one entry,
+#insert_many is used, or else insert_one is used
+
+if isinstance(file_data, list):
+    try:
+        collection.insert_many(file_data)
+    except Exception as e:
+        print(e, "when importing into Mongo")
+else:
+    try:
+        collection.insert_one(file_data)
+    except Exception as e:
+        print(e)
+
+        """
